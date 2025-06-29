@@ -10,7 +10,7 @@ export async function getCurrentUser() {
 export async function requireAuth() {
   const user = await getCurrentUser()
   if (!user) {
-    redirect("/") // Changed from "/" to "/auth" to match your sign-in page
+    redirect("/auth") // Changed from "/" to "/auth" to match your sign-in page
   }
   return user
 }

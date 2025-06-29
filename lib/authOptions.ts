@@ -63,12 +63,13 @@ export const authOptions: NextAuthOptions = {
       }
       return session
     },
-    // ADD THIS CALLBACK - This is likely the missing piece
+    // This callback handles where users go after login
     async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
+      // If a specific callback URL is provided, use it
       if (url.startsWith("/")) return `${baseUrl}${url}`
-      // Allows callback URLs on the same origin
+      // If callback URL is on same origin, use it
       else if (new URL(url).origin === baseUrl) return url
+      // DEFAULT: Always redirect to dashboard after successful login
       return `${baseUrl}/dashboard`
     }
   },
