@@ -1,0 +1,291 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstName String?
+  lastName  String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // User preferences and goals
+  age           Int?
+  height        Float? // in cm
+  weight        Float? // in kg
+  gender        Gender?
+  activityLevel ActivityLevel?
+  fitnessGoal   FitnessGoal?
+
+  // Relations
+  mealPlans    MealPlan[]
+  workouts     Workout[]
+  progressLogs ProgressLog[]
+  reports      Report[]
+
+  @@map("users")
+}
+
+model MealPlan {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  isActive    Boolean   @default(false)
+  startDate   DateTime
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  meals Meal[]
+
+  @@map("meal_plans")
+}
+
+model Meal {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  mealType    MealType
+  calories    Int?
+  protein     Float? // in grams
+  carbs       Float? // in grams
+  fat         Float? // in grams
+  fiber       Float? // in grams
+  scheduledAt DateTime
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  mealPlanId String
+  mealPlan   MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+
+  ingredients MealIngredient[]
+
+  @@map("meals")
+}
+
+model Ingredient {
+  id              String @id @default(cuid())
+  name            String @unique
+  caloriesPer100g Int
+  proteinPer100g  Float
+  carbsPer100g    Float
+  fatPer100g      Float
+  fiberPer100g    Float?
+
+  mealIngredients MealIngredient[]
+
+  @@map("ingredients")
+}
+
+model MealIngredient {
+  id       String @id @default(cuid())
+  quantity Float // in grams
+
+  mealId       String
+  meal         Meal       @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@unique([mealId, ingredientId])
+  @@map("meal_ingredients")
+}
+
+model Workout {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  workoutType WorkoutType
+  duration    Int? // in minutes
+  isActive    Boolean     @default(false)
+  startDate   DateTime
+  endDate     DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  exercises WorkoutExercise[]
+
+  @@map("workouts")
+}
+
+model Exercise {
+  id           String           @id @default(cuid())
+  name         String           @unique
+  description  String?
+  category     ExerciseCategory
+  muscleGroup  MuscleGroup[]
+  equipment    Equipment?
+  instructions String?
+
+  workoutExercises WorkoutExercise[]
+
+  @@map("exercises")
+}
+
+model WorkoutExercise {
+  id        String  @id @default(cuid())
+  sets      Int?
+  reps      Int?
+  weight    Float? // in kg
+  duration  Int? // in seconds for time-based exercises
+  distance  Float? // in meters for cardio
+  restTime  Int? // in seconds
+  completed Boolean @default(false)
+  notes     String?
+
+  workoutId  String
+  workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@unique([workoutId, exerciseId])
+  @@map("workout_exercises")
+}
+
+model ProgressLog {
+  id        String       @id @default(cuid())
+  logType   ProgressType
+  value     Float
+  unit      String
+  notes     String?
+  logDate   DateTime     @default(now())
+  createdAt DateTime     @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("progress_logs")
+}
+
+model Report {
+  id          String     @id @default(cuid())
+  reportType  ReportType
+  title       String
+  data        Json // Store report data as JSON
+  generatedAt DateTime   @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}
+
+// Enums
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum ActivityLevel {
+  SEDENTARY
+  LIGHTLY_ACTIVE
+  MODERATELY_ACTIVE
+  VERY_ACTIVE
+  EXTREMELY_ACTIVE
+}
+
+enum FitnessGoal {
+  WEIGHT_LOSS
+  MUSCLE_GAIN
+  MAINTENANCE
+  ENDURANCE
+  STRENGTH
+  GENERAL_FITNESS
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+  PRE_WORKOUT
+  POST_WORKOUT
+}
+
+enum WorkoutType {
+  STRENGTH
+  CARDIO
+  FLEXIBILITY
+  SPORTS
+  MIXED
+  REHABILITATION
+}
+
+enum ExerciseCategory {
+  CHEST
+  BACK
+  SHOULDERS
+  ARMS
+  LEGS
+  CORE
+  CARDIO
+  FLEXIBILITY
+  FULL_BODY
+}
+
+enum MuscleGroup {
+  CHEST
+  BACK
+  SHOULDERS
+  BICEPS
+  TRICEPS
+  FOREARMS
+  QUADRICEPS
+  HAMSTRINGS
+  GLUTES
+  CALVES
+  CORE
+  CARDIO
+}
+
+enum Equipment {
+  BODYWEIGHT
+  DUMBBELLS
+  BARBELL
+  RESISTANCE_BANDS
+  KETTLEBELL
+  CABLE_MACHINE
+  CARDIO_MACHINE
+  YOGA_MAT
+  MEDICINE_BALL
+  PULL_UP_BAR
+}
+
+enum ProgressType {
+  WEIGHT
+  BODY_FAT
+  MUSCLE_MASS
+  MEASUREMENTS
+  PERFORMANCE
+  ENERGY_LEVEL
+  SLEEP_QUALITY
+  MOOD
+}
+
+enum ReportType {
+  WEEKLY_SUMMARY
+  MONTHLY_SUMMARY
+  PROGRESS_ANALYSIS
+  NUTRITION_BREAKDOWN
+  WORKOUT_PERFORMANCE
+  GOAL_TRACKING
+}
