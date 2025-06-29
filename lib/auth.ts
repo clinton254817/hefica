@@ -10,14 +10,14 @@ export async function getCurrentUser() {
 export async function requireAuth() {
   const user = await getCurrentUser()
   if (!user) {
-    redirect("/auth")
+    redirect("/")
   }
   return user
 }
 
 // Client-side auth utilities
 export const authConfig = {
-  signInUrl: "/auth",
+  signInUrl: "/",
   dashboardUrl: "/dashboard",
   
   // Password validation
