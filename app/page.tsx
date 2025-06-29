@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { gsap } from 'gsap';
-import { Eye, EyeOff, Mail, Lock, User, Heart, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Heart, CheckCircle, Activity } from 'lucide-react';
 import { signIn, getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -331,9 +331,9 @@ export default function AuthPage() {
         {/* Logo */}
         <div ref={logoRef} className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center mr-3">
-              <Heart className="text-white" size={24} fill="currentColor" />
-            </div>
+                  <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
+                    <Activity className="w-5 h-5 text-white" />
+                  </div>
             <h1 className="text-3xl font-bold text-black tracking-tight">
               Hefica
             </h1>

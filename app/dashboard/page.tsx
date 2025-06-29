@@ -297,7 +297,7 @@ const Dashboard = () => {
                     <Activity className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-lg font-bold text-gray-900">FitTracker</h1>
+                    <h1 className="text-lg font-bold text-gray-900">Hefica</h1>
                   </div>
                 </div>
               )}
