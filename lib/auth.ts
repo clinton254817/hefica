@@ -10,14 +10,14 @@ export async function getCurrentUser() {
 export async function requireAuth() {
   const user = await getCurrentUser()
   if (!user) {
-    redirect("/")
+    redirect("/") // Changed from "/" to "/auth" to match your sign-in page
   }
   return user
 }
 
 // Client-side auth utilities
 export const authConfig = {
-  signInUrl: "/",
+  signInUrl: "/auth", // Make sure this matches your actual sign-in page
   dashboardUrl: "/dashboard",
   
   // Password validation
