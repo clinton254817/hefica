@@ -17,7 +17,7 @@ export async function requireAuth() {
 
 // Client-side auth utilities
 export const authConfig = {
-  signInUrl: "/auth", // Make sure this matches your actual sign-in page
+  signInUrl: "/", // Make sure this matches your actual sign-in page
   dashboardUrl: "/dashboard",
   
   // Password validation
