@@ -347,7 +347,7 @@ export default function AuthPage() {
         <div ref={formRef} className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-black mb-2">
-              {isSignUp ? 'Create your account' : 'Welcome back'}
+              {isSignUp ? 'Create your account' : 'karibu '}
             </h2>
             <p className="text-gray-500 text-base font-light">
               {isSignUp 
